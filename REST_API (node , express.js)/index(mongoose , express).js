@@ -10,12 +10,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/trial-app')
 .then(() => console.log("mongoose connected"))
 .catch((err)=> console.log("mongo error" , err))
 
-//schema
+//schema (structure of data)
 
 const userSchema = new mongoose.Schema({
     firstName:{
         type: String,
-        required: true,
+        required: true, //if we will not give this then entry will not be accepted 
     },
     lastName: {
         type: String,
@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
+        unique: true, //same email id should not be used more than once 
     },
     jobTitle: {
         type: String,
@@ -32,9 +32,9 @@ const userSchema = new mongoose.Schema({
      type: String,
 
     },
-});
+}, {timestamps: true});
 
-const user = mongoose.model('user' , userSchema); //model
+const user = mongoose.model('user' , userSchema); //model , name given to the model is 'user'
 
 //middleware:
 //app.use is used to make middleware
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
 //ROUTES:
 
 app.get("/users" , async (req,res)=>{
-    const allDbUsers = await user.find({}); //find all users
+    const allDbUsers = await user.find({}); //find all users from database
     const html =`
     <ul>
     ${allDbUsers.map((user)=>`<li>${user.firstName} - ${user.email}</li>`).join("")}
@@ -109,7 +109,7 @@ app.post("/api/users", async (req, res) => {
     return res.status(400).json({ msg: "All fields are req..." });
   }
 
-  const result = await user.create({
+  const result = await user.create({ //here the user.create we are using is that variable made for model 
     firstName: body.first_name,
     lastName: body.last_name,
     email: body.email,
