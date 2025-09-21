@@ -2,7 +2,7 @@ const User = require("../models/user")
 
 
 async function handleGetAllUsers(req,res){
-    const allDbUsers = await user.find({});
+    const allDbUsers = await user.find({}); //because it is using user so we will need to import /model/user
     return res.json(allDbUsers);
 }
 
