@@ -20,6 +20,6 @@ app.use(logReqRes("log.txt"));
 
 //ROUTES:
 
-app.use("/api/users" , userrouter);
+app.use("/api/users" , userrouter); //this means for an req on /api/users , use userrouter
 
 app.listen(port , ()=>console.log('server is running'))
