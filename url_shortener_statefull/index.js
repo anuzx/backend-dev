@@ -1,9 +1,11 @@
 const express = require("express");
-const app = express();
+const cookieParser = require("cookie-parser");
 const path = require("path");
 const { connectToMongoDB } = require("./connect");
 const URL = require("./models/url");
-const staticRouter = require("./routes/staticRouter");
+const {restrictToLoggedinUserOnly,checkAuth} = require("./middlewares/auth")
+
+const app = express();
 const port = 8001;
 
 //connection
@@ -18,23 +20,20 @@ app.use(express.static(path.join(__dirname, "views")));
 
 app.use(express.json()); //middleware
 app.use(express.urlencoded({ extended: false })); //middleware
+app.use(cookieParser());
 
 //route
+const staticRoute = require("./routes/staticRouter");
 const urlRoute = require("./routes/url");
+const userRoute = require("./routes/user");
 
-app.use("/url", urlRoute);
-app.use("/", staticRouter);
+app.use("/url", restrictToLoggedinUserOnly,urlRoute);
+app.use("/", checkAuth, staticRoute);
+app.use("/user",  userRoute);
 
 // FIXED: Added null check and error handling
 app.get("/:shortId", async (req, res) => {
-  try {
-    const shortId = req.params.shortId;
-
-    // Skip static files and known routes
-    if (shortId.includes(".") || shortId === "favicon.ico") {
-      return res.status(404).send("Not found");
-    }
-
+     const shortId = req.params.shortId;
     const entry = await URL.findOneAndUpdate(
       { shortId },
       {
@@ -52,10 +51,7 @@ app.get("/:shortId", async (req, res) => {
     }
 
     res.redirect(entry.redirectURL);
-  } catch (error) {
-    console.error("Error redirecting:", error);
-    res.status(500).send("Server error");
-  }
+  
 });
 
 app.listen(port, () => console.log("server started"));
