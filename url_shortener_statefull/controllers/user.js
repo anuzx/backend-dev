@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4 } = require("uuid"); // we gave name to v4 as uuidv4
 const { setUser } = require("../service/auth");
 
 //signup
@@ -18,16 +18,16 @@ async function handleUserSignup(req, res) {
 
 async function handleUserLogin(req, res) {
   const { email, password } = req.body;
-  const user = await User.findOne({
-    email,
+  const user = await User.findOne({ //this means find a user whose email and pass match with the given email and pass
+    email,                          //here User is the variable given to the model/user file 
     password,
   });
   if (!user)
     return res.render("login", {
       error: "Invalid Username or Password",
     });
-  const sessionId = uuidv4();
-  setUser(sessionId, user);
+  const sessionId = uuidv4(); //in login we must generate a unique id (authentication)
+  setUser(sessionId, user); 
   res.cookie("uid", sessionId);
   return res.redirect("/");
 }
