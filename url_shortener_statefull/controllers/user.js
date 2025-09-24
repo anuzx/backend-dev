@@ -28,9 +28,11 @@ async function handleUserLogin(req, res) {
     });
   const sessionId = uuidv4(); //in login we must generate a unique id (authentication)
   setUser(sessionId, user); 
-  res.cookie("uid", sessionId);
+  res.cookie("uid", sessionId); // we kept name of cookie as uid
   return res.redirect("/");
 }
+
+//now when we have created a cookie after login , now we just need to take this value of cookie in middleware and check for the user  
 
 module.exports = {
   handleUserSignup,
