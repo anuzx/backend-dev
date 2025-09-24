@@ -18,7 +18,7 @@ app.set("views", path.resolve("./views"));
 // Serve static files
 app.use(express.static(path.join(__dirname, "views")));
 
-app.use(express.json()); //middleware
+app.use(express.json()); //middleware to parse incoming body
 app.use(express.urlencoded({ extended: false })); //middleware
 app.use(cookieParser());
 
