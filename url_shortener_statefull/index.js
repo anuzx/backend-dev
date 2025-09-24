@@ -31,13 +31,15 @@ app.use("/url", restrictToLoggedinUserOnly,urlRoute);
 app.use("/", checkAuth, staticRoute);
 app.use("/user",  userRoute);
 
-// FIXED: Added null check and error handling
-app.get("/:shortId", async (req, res) => {
+
+app.get("/:shortId", async (req, res) => { // we have to fetch the shortid and then give to user 
      const shortId = req.params.shortId;
     const entry = await URL.findOneAndUpdate(
       { shortId },
-      {
-        $push: {
+      { //The $push operator is a fundamental update operator in MongoDB
+        //used to append a specified value to an array within a document.
+        //{ $push: { <field1>: <value1>, <field2>: <value2>, ... } }  
+        $push: { //visit history is an array so we will use $push
           visitHistory: {
             timestamp: Date.now(),
           },
