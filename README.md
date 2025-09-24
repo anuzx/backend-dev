@@ -2,11 +2,11 @@
 
 <h1>how to make backend project step by step guide</h1>
 
-<p>1.)do npm init and make your package.json file</p><br>
-<p>2.)make index.js file and write this code (this will me used in every backend)</p><br>
+<p>1.) do npm init and make your package.json file</p><br>
+<p>2.) make index.js file and write this code (this will me used in every backend)</p><br>
 <img width="580" height="155" alt="image" src="https://github.com/user-attachments/assets/ce6db17d-3be5-43f2-8d8f-c06b3bc2bd8b" />
 <br>
-<p>make connect.js file ans write this code</p>
+<p>make connect.js file and write this code</p>
 <img width="429" height="243" alt="image" src="https://github.com/user-attachments/assets/148d75b2-927e-4efd-a163-d28882b90b22" />
 <br>
 <p>and then import this into index.js by doing </p><br>
