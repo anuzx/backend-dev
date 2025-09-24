@@ -6,7 +6,7 @@ const { setUser } = require("../service/auth");
 
 async function handleUserSignup(req, res) {
   const { name, email, password } = req.body;
-  await User.create({
+  await User.create({ //user.create ->storing the account permanently in MongoDB.
     name,
     email,
     password,
@@ -32,7 +32,7 @@ async function handleUserLogin(req, res) {
   return res.redirect("/");
 }
 
-//now when we have created a cookie after login , now we just need to take this value of cookie in middleware and check for the user  
+//now when we have created a cookie after login , we just need to take this value of cookie in middleware and check for the user  
 
 module.exports = {
   handleUserSignup,
