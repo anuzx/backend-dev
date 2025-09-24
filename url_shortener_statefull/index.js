@@ -19,7 +19,7 @@ app.set("views", path.resolve("./views"));
 app.use(express.static(path.join(__dirname, "views")));
 
 app.use(express.json()); //middleware to parse incoming body
-app.use(express.urlencoded({ extended: false })); //middleware
+app.use(express.urlencoded({ extended: false })); //middleware to get form data
 app.use(cookieParser());
 
 //route
