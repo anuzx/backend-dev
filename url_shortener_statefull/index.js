@@ -27,7 +27,7 @@ const staticRoute = require("./routes/staticRouter");
 const urlRoute = require("./routes/url");
 const userRoute = require("./routes/user");
 
-app.use("/url", restrictToLoggedinUserOnly,urlRoute);
+app.use("/url", restrictToLoggedinUserOnly,urlRoute); //this route will only work when the user is logged in 
 app.use("/", checkAuth, staticRoute);
 app.use("/user",  userRoute);
 
