@@ -2,8 +2,8 @@ import type { Request, Response } from "express";
 import { SigninSchema, SignupSchema } from "../zod";
 import { UserModel } from "../models/user.model";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../constant";
-import { resolve } from "bun";
+import { JWT_ACCESS_SECRET , JWT_REFRESH_SECRET } from "../constant";
+import bcrypt from "bcrypt";
 
 export const RegisterUser = async (req: Request, res: Response) => {
   const parsedData = SignupSchema.safeParse(req.body);
@@ -14,15 +14,18 @@ export const RegisterUser = async (req: Request, res: Response) => {
     return;
   }
 
+  const hashedPassword = await bcrypt.hash(parsedData.data?.password, 10);
+
   try {
     const user = await UserModel.create({
       username: parsedData.data?.username,
       email: parsedData.data?.email,
-      password: parsedData.data?.password,
+      password: hashedPassword,
     });
-    res.json({
+
+    res.status(201).json({
       message: "signup completed",
-      id:  user._id,
+      id: user._id,
     });
   } catch (error) {
     res.status(411).json({
@@ -39,11 +42,13 @@ export const LoginUser = async (req: Request, res: Response) => {
     });
     return;
   }
+
   try {
+    //find user by username as it is in plain text in DB and compare password using bcrypt
     const existingUser = await UserModel.findOne({
       username: parsedData.data.username,
-      password: parsedData.data.password,
     });
+
     if (!existingUser) {
       res.status(403).json({
         message: "not authorized",
@@ -51,18 +56,39 @@ export const LoginUser = async (req: Request, res: Response) => {
       return;
     }
 
-    const token = jwt.sign(
-      {
-        
-        id:  existingUser._id
-        
-      },
-      JWT_SECRET
+    const isPasswordValid = await bcrypt.compare(
+      parsedData.data.password, // plaintext password
+      existingUser.password // hashed password from DB
     );
+
+    if (!isPasswordValid) {
+      return res.status(403).json({ message: "not authorized" });
+    }
+
+    // short-lived access token
+    const accessToken = jwt.sign({ id: existingUser._id }, JWT_ACCESS_SECRET, {
+      expiresIn: "15m",
+    });
+
+    // long-lived refresh token
+    const refreshToken = jwt.sign(
+      { id: existingUser._id },
+      JWT_REFRESH_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // store refresh token in http-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/v1/user/refresh",
+    });
+
     res.status(200).json({
       message: "signin successfull",
-      token: token
-    })
+      token: accessToken, // frontend stores this in MEMORY
+    });
   } catch (error) {
     res.status(411).json({
       message: "No such User",
@@ -70,9 +96,8 @@ export const LoginUser = async (req: Request, res: Response) => {
   }
 };
 
-
-export const Home = (req:Request,res:Response) => {
+export const Home = (req: Request, res: Response) => {
   res.json({
-    message:"welcome to home page"
-  })
-}
+    message: "welcome to home page",
+  });
+};
