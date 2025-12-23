@@ -3,6 +3,7 @@ import { SigninSchema, SignupSchema } from "../zod";
 import { UserModel } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../constant";
+import { resolve } from "bun";
 
 export const RegisterUser = async (req: Request, res: Response) => {
   const parsedData = SignupSchema.safeParse(req.body);
@@ -68,3 +69,10 @@ export const LoginUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+export const Home = (req:Request,res:Response) => {
+  res.json({
+    message:"welcome to home page"
+  })
+}
