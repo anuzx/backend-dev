@@ -1,15 +1,9 @@
 # bun
 
-To install dependencies:
+Bun does NOT expose a res object like Node/Express
+That’s why you must return a Response, and that’s why Promises are needed.
+<br>
+Node code works without Promises because you control the socket
+<br>
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.3.4. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+![alt text](image.png)

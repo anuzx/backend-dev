@@ -20,7 +20,12 @@ server.listen(3000 , ()=>console.log("server running at 3000"))
 
 //res.writehead(statuscode , statusmessage, headers)
 
-//code from the client side to hit the end point every 5 sec ,simulation of how actual long polling works
+//Content-Type is an HTTP response header that tells the client:
+
+// “What kind of data am I sending you?”
+// So the client knows how to parse the response body.
+
+//code from the client side to hit the end point every 5 sec ,simulation of how actual long polling works:
 
 // import axios from "axios";
 
